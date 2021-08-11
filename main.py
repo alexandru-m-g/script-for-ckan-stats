@@ -2,6 +2,7 @@ import csv
 
 from ckan import process_datasets
 from computers.computers import OrgStatsComputer, DatasetsStatsComputer, StatsComputer
+from computers.post_filters import DateOfDatasetFilter
 
 
 def write_csv(stats_computer: StatsComputer):
@@ -19,7 +20,8 @@ def write_csv(stats_computer: StatsComputer):
 
 
 if __name__ == '__main__':
-    stats_computer = DatasetsStatsComputer()
+    post_filter = DateOfDatasetFilter('2015-12-31T23:59:59.999')
+    stats_computer = DatasetsStatsComputer(post_filter=post_filter)
     process_datasets(stats_computer)
     write_csv(stats_computer)
     pass

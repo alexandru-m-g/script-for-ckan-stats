@@ -9,7 +9,8 @@ def process_datasets(stats_computer: StatsComputer) -> [dict]:
     while True:
         base_url = CKAN_URL + PACKAGE_SEARCH_ENDPOINT
         # full_url = '{}?ext_compute_freshness=for-data-completeness&start={}&rows={}&fq=type:dataset -extras_archived:true'.format(base_url, start, CHUNK_SIZE)
-        full_url = '{}?start={}&rows={}&fq=type:dataset organization:reach-initiative -extras_archived:true'.format(base_url, start, CHUNK_SIZE)
+        # full_url = '{}?start={}&rows={}&fq=type:dataset organization:reach-initiative -extras_archived:true'.format(base_url, start, CHUNK_SIZE)
+        full_url = '{}?start={}&rows={}&fq=type:dataset data_update_frequency:"-1" -extras_archived:true'.format(base_url, start, CHUNK_SIZE)
         start += CHUNK_SIZE
         print('Getting data from: ' + full_url)
         headers = {

@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Iterable
 
+from computers.post_filters import PostFilter
+
 
 class StatsComputer(ABC):
     @abstractmethod
@@ -62,23 +64,27 @@ class OrgStatsComputer(StatsComputer):
 
 class DatasetsStatsComputer(StatsComputer):
 
-    csv_header = 'dataset_name', 'dataset_title', 'number_of_resources', 'org_name', 'org_title'
+    csv_header = 'dataset_name', 'dataset_title', 'dataset_date', 'number_of_resources', 'org_name', 'org_title'
 
-    def __init__(self) -> None:
+    def __init__(self, post_filter: PostFilter = None) -> None:
         self.datasets = []
+        self.post_filter = post_filter
 
     def process_dataset(self, dataset: dict):
-        org_name = dataset['organization']['name']
-        org_title = dataset['organization']['title']
-        dataset_name = dataset['name']
-        dataset_title = dataset['title']
-        resources_num = len(dataset.get('resources', []))
+        if self.post_filter.allow_dataset(dataset):
+            org_name = dataset['organization']['name']
+            org_title = dataset['organization']['title']
+            dataset_date = dataset['dataset_date']
+            dataset_name = dataset['name']
+            dataset_title = dataset['title']
+            resources_num = len(dataset.get('resources', []))
 
-        self.datasets.append((dataset_name, dataset_title, resources_num, org_name, org_title))
+            self.datasets.append((dataset_name, dataset_title, dataset_date, resources_num, org_name, org_title))
 
     def to_csv_rows(self):
         return self.datasets
 
     def header_row(self) -> Iterable:
         return self.csv_header
+
 
